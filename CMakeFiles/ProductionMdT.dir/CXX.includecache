@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/sybillecaffiau/Documents/PUBLICATIONS/ENCOURS/IHM2016/kxmlVersOpenFst/kxmlVersOpenFstConfig.h
+
+/Users/sybillecaffiau/Documents/PUBLICATIONS/ENCOURS/IHM2016/kxmlVersOpenFst/parserKXML.cpp
+fstream
+-
+stdio.h
+-
+stdlib.h
+-
+tinyxml2.h
+-
+fstream
+-
+string
+-
+iostream
+-
+sstream
+-
+kxmlVersOpenFstConfig.h
+/Users/sybillecaffiau/Documents/PUBLICATIONS/ENCOURS/IHM2016/kxmlVersOpenFst/kxmlVersOpenFstConfig.h
+

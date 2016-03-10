@@ -1,0 +1,2 @@
+/Users/sybillecaffiau/Documents/PUBLICATIONS/ENCOURS/IHM2016/kxmlVersOpenFst/CMakeFiles/ProductionMdT.dir
+/Users/sybillecaffiau/Documents/PUBLICATIONS/ENCOURS/IHM2016/kxmlVersOpenFst/CMakeFiles/tinyxml.dir

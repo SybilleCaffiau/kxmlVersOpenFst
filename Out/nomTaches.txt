@@ -1,0 +1,10 @@
+Racine    Tester le code
+1 Comprendre le code
+2 Essayer avec l'exemple
+3 Essayer sur l'étude de cas de Belen
+4 Adapter
+4.1 Identitifer les limitations
+4.2 Mettre à jour
+4.2.1 Mettre à jour la doc
+4.2.2 Corriger le code
+4.2.3 Ajouter des focntionnalités

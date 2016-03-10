@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/sybillecaffiau/Documents/PUBLICATIONS/ENCOURS/IHM2016/kxmlVersOpenFst/tinyxml/tinystr.h
+assert.h
+-
+string.h
+-
+
+/Users/sybillecaffiau/Documents/PUBLICATIONS/ENCOURS/IHM2016/kxmlVersOpenFst/tinyxml/tinyxml.h
+ctype.h
+-
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+assert.h
+-
+string
+-
+iostream
+-
+sstream
+-
+tinystr.h
+/Users/sybillecaffiau/Documents/PUBLICATIONS/ENCOURS/IHM2016/kxmlVersOpenFst/tinyxml/tinystr.h
+
+/Users/sybillecaffiau/Documents/PUBLICATIONS/ENCOURS/IHM2016/kxmlVersOpenFst/tinyxml/xmltest.cpp
+iostream
+-
+sstream
+-
+stdio.h
+-
+crtdbg.h
+-
+tinyxml.h
+/Users/sybillecaffiau/Documents/PUBLICATIONS/ENCOURS/IHM2016/kxmlVersOpenFst/tinyxml/tinyxml.h
+
