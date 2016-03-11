@@ -410,37 +410,11 @@ void create_Automates(string fichierNomTaches, string fichierMdT){
 				cout << " racine trouve"<< endl;
 				//doc.close();
 				
-				//creation de l'automate pour la racine
-				//XMLElement* num= racine->FirstChildElement("task-numero");
-				//cout << " numero trouve"<< endl;
-				//const char* value_num = num->GetText();
-				//printf( "racine %s\n", value_num);
-				//if(value_num==tache){
-					//cout << "la tache est trouve" << endl;
-					//doc.close();
-			
-					//ordonnancement= racine->FirstChildElement("task-decomposition");
-					//string ordo=ordonnancement->GetText();
-					//printf( "le noeud est  %s\n", ordonnancement->GetText());
-					//if(ordo =="ALT"){
-					//	create_Automate_TacheAlternative(racine, fichierNomTaches);
-					//}
-					//if (ordo=="SEQ"){
-					//	create_Automate_TacheSequentielle(racine, fichierNomTaches);
-					//}
-					//if(ordo =="PAR"){//attention on choisit dans cette version de traiter le parallèlisme comme du alt
-					//	create_Automate_TacheAlternative(racine, fichierNomTaches);
-					//}
-					//else{//reste le cas des parallèles et sans ordre
-					//}
-		
-
-				//}
-				
-				//
-				
-				
+				//cas de la racine de l'arbre				
 				Fils1=racine->FirstChildElement("task");
+				ordonnancement= Fils1->FirstChildElement("task-decomposition");
+				printf( "le noeud est  %s\n", ordonnancement->GetText());
+				
 				recherche_recursif(Fils1, fichierMdT, tache, fichierNomTaches);
 				//cout << " tache trouvee"<< endl;
 				//aiguillage vers la bonne fonction de traduction en automate
