@@ -143,7 +143,7 @@ void create_Automate_TacheSequentielle(XMLElement* Noeud, string FichierTaches){
 	string Nom_Fichier="Out/SeqA_"+Tache+".txt";
 	ofstream Automate(Nom_Fichier);
 	
-	//trouver tous les enfants (à partir du deuxieme
+	//trouver tous les enfants (à partir du deuxieme)
 	if((num_mere=="Root")||(num_mere=="Racine")){
 		dernier_fils=intToString(num_fraterie);
 		num_fraterie++;
@@ -370,6 +370,169 @@ void recherche_recursif(XMLElement* Noeud, string fichierXML, string nom_tache, 
 	//printf( "dans if avec value_nom %s\n", trouve->GetText());
 }
 
+
+
+//fonction qui genere un automate (fixhier txt) correspondant à la production de Racine (par son identifiant numérique) par ses sous-tâches sequentielles
+void create_Automate_RacineSequentielle(XMLElement* Racine, string FichierTaches){
+	XMLElement* nom= Racine->FirstChildElement("task-name");
+	//XMLElement* num= Racine->FirstChildElement("task-numero");
+	const char* nom_value = nom->GetText();
+	const char* num_value = "Racine";
+	
+	//la racine est la mère
+	string num_mere=num_value;
+	int num_fraterie=1;//une tache a au moins 2 fils
+	string num_fils;
+	string dernier_fils;
+	string ligne;
+	
+	ifstream LesTaches(FichierTaches);
+	getline(LesTaches, ligne);
+	stringstream buffer;
+	buffer << ligne;
+	int state=0;
+	
+	//creation du fichier qui va contenir l'automate
+	string Tache=num_value;
+	string Nom_Fichier="Out/SeqA_Racine.txt";
+	ofstream Automate(Nom_Fichier);
+	
+
+	dernier_fils=intToString(num_fraterie);
+	num_fraterie++;
+	num_fils=intToString(num_fraterie);
+	
+	if(LesTaches){
+		string mot;
+		char* nom;
+
+
+		while(!LesTaches.eof()){
+			//cout << "Je suis dans la boucle" <<endl;
+			buffer >> mot;
+			nom = (char*)mot.c_str();
+			printf( "%s\n", nom);
+			
+			//comparaison mot
+			if(mot==num_fils){
+				//on a un fils on peut ecrire l'aine
+				cout <<"on a trouvé le fils :" <<num_fils << endl;
+				Automate << state <<" "<< state +1<< " "<<dernier_fils<< " eps"<< endl;
+				dernier_fils=num_fils;
+				state ++;
+				
+				//pour le suivant
+				num_fraterie++;
+				num_fils=intToString(num_fraterie);
+
+			}
+			
+			//cout << "Je change de ligne" <<endl;
+			//cout << "Voici l'ancienne : %s" << ligne <<endl;
+			getline(LesTaches, ligne);
+			//cout << "Voici la nouvelle : %s" << ligne <<endl;
+			buffer.str("");
+			buffer << ligne;
+			//cout << "Le buffer : %s" << buffer <<endl;
+
+			
+		}
+		Automate << state << " 0 "<< dernier_fils<<" "<< num_mere << endl;
+		Automate << "0 " <<endl;
+		
+	}
+	else{
+		printf( "ERREUR: Impossible d'ouvrir le fichier \n");
+	}
+
+	
+	
+	Automate.close();
+	
+}
+
+//à modifier
+//fonction qui genere un automate (fixhier txt) correspondant à la production de Tache (par son identifiant numérique) par ses sous-tâches alternatives
+void create_Automate_RacineAlternative(XMLElement* Noeud, string FichierTaches){
+	XMLElement* nom= Racine->FirstChildElement("task-name");
+	//XMLElement* num= Racine->FirstChildElement("task-numero");
+	const char* nom_value = nom->GetText();
+	const char* num_value = "Racine";
+
+	
+	string num_mere=num_value;
+	int num_fraterie=1;//une tache a au moins 2 fils
+	string num_fils;
+	string dernier_fils;
+	string ligne;
+	ifstream LesTaches(FichierTaches);
+	getline(LesTaches, ligne);
+	stringstream buffer;
+	buffer << ligne;
+	int state=0;
+	
+	//creation du fichier qui va contenir l'automate
+	string Tache=num_value;
+	string Nom_Fichier="Out/AltA_Racine.txt";
+	ofstream Automate(Nom_Fichier);
+	
+
+	dernier_fils=intToString(num_fraterie);
+	num_fraterie++;
+	num_fils=intToString(num_fraterie);
+	
+	if(LesTaches){
+		string mot;
+		char* nom;
+
+
+		while(!LesTaches.eof()){
+			//cout << "Je suis dans la boucle" <<endl;
+			buffer >> mot;
+			nom = (char*)mot.c_str();
+			printf( "%s\n", nom);
+			
+			//comparaison mot
+			if(mot==num_fils){
+				//on a un fils on peut ecrire l'aine
+				//cout <<"on a trouvé le fils :" <<num_fils << endl;
+				Automate << state <<" "<< state << " "<<dernier_fils<< " "<< num_mere<< endl;
+				dernier_fils=num_fils;
+				
+				//pour le suivant
+				num_fraterie++;
+
+				num_fils=intToString(num_fraterie);
+
+			}
+			
+			//cout << "Je change de ligne" <<endl;
+			//cout << "Voici l'ancienne : %s" << ligne <<endl;
+			getline(LesTaches, ligne);
+			//cout << "Voici la nouvelle : %s" << ligne <<endl;
+			buffer.str("");
+			buffer << ligne;
+			//cout << "Le buffer : %s" << buffer <<endl;
+
+			
+		}
+		Automate << state <<" "<< state << " "<<dernier_fils<< " "<< num_mere<< endl;
+		Automate << "0 " <<endl;
+		
+	}
+	else{
+		printf( "ERREUR: Impossible d'ouvrir le fichier \n");
+	}
+
+	
+	
+	Automate.close();
+	
+	
+	
+}
+
+
 void create_Automates(string fichierNomTaches, string fichierMdT){
 	
 	//ouverture et lecture du fichier avec le nom des taches
@@ -407,13 +570,27 @@ void create_Automates(string fichierNomTaches, string fichierMdT){
 	
 				//recherche de la description xml de la tache
 				racine = doc.RootElement();
-				cout << " racine trouve"<< endl;
+
 				//doc.close();
 				
 				//cas de la racine de l'arbre				
 				Fils1=racine->FirstChildElement("task");
 				ordonnancement= Fils1->FirstChildElement("task-decomposition");
-				printf( "le noeud est  %s\n", ordonnancement->GetText());
+				string ordo=ordonnancement->GetText();
+				
+				if(ordo=="ALT"){
+					create_Automate_RacineAlternative(Fils1, fichierNomTaches);
+				}
+				if (ordo=="SEQ"){
+					create_Automate_RacineSequentielle(Fils1, fichierNomTaches);
+				}
+				if(ordo=="PAR"){//attention on choisit dans cette version de traiter le parallèlisme comme du alt
+					create_Automate_RacineAlternative(Fils1, fichierNomTaches);
+				}
+				else{//reste le cas des parallèles et sans ordre
+				}
+				
+				
 				
 				recherche_recursif(Fils1, fichierMdT, tache, fichierNomTaches);
 				//cout << " tache trouvee"<< endl;
@@ -464,19 +641,7 @@ int main(int argc, char *argv[]){
 	
 	
 		XMLElement* racine = doc.RootElement();
-		//printf( "racine trouvée\n");
-		//
-		//
-		
-		
-		
-		
-		//
-		//
-		//traitement de la racine (pour creer son automate)
-		
-		//
-		//
+	
 		
 		
 		
