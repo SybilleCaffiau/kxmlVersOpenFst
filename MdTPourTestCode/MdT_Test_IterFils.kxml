@@ -46,7 +46,7 @@
             <task-decomposition>LEAF</task-decomposition>
             <task-precondition>true</task-precondition>
             <task-effetsdebord>void</task-effetsdebord>
-            <task-iteration>[1]</task-iteration>
+            <task-iteration>while(?BOOL  )</task-iteration>
             <point classkmad="tache.Point" idkmad="K9">
                 <point-x>465</point-x>
                 <point-y>338</point-y>
@@ -97,7 +97,7 @@
                 <task-decomposition>LEAF</task-decomposition>
                 <task-precondition>true</task-precondition>
                 <task-effetsdebord>void</task-effetsdebord>
-                <task-iteration>[1]</task-iteration>
+                <task-iteration>while( ?BOOL )</task-iteration>
                 <point classkmad="tache.Point" idkmad="K15">
                     <point-x>881</point-x>
                     <point-y>520</point-y>
@@ -147,7 +147,7 @@
                     <task-decomposition>LEAF</task-decomposition>
                     <task-precondition>true</task-precondition>
                     <task-effetsdebord>void</task-effetsdebord>
-                    <task-iteration>[1]</task-iteration>
+                    <task-iteration>while( ?BOOL )</task-iteration>
                     <point classkmad="tache.Point" idkmad="K27">
                         <point-x>954</point-x>
                         <point-y>677</point-y>
