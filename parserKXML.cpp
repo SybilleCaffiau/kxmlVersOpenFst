@@ -121,7 +121,7 @@ string intToString(int i){
      return oss.str();
 }
 
-//fonction qui genere un automate (fixhier txt) correspondant à la production de Tache (par son identifiant numérique) par ses sous-tâches sequentielles
+//fonction qui genere un automate (fichier txt) correspondant à la production de Tache (par son identifiant numérique) par ses sous-tâches sequentielles
 void create_Automate_TacheSequentielle(XMLElement* Noeud, string FichierTaches){
 	XMLElement* nom= Noeud->FirstChildElement("task-name");
 	XMLElement* num= Noeud->FirstChildElement("task-numero");
@@ -155,24 +155,71 @@ void create_Automate_TacheSequentielle(XMLElement* Noeud, string FichierTaches){
 		num_fils=num_mere+"."+intToString(num_fraterie);
 	}
 	
+	
+	
 	if(LesTaches){
 		string mot;
 		char* nom;
-
+		
 
 		while(!LesTaches.eof()){
 			//cout << "Je suis dans la boucle" <<endl;
 			buffer >> mot;
 			nom = (char*)mot.c_str();
 			printf( "%s\n", nom);
+		
+			//identifier si le fils est iteratif
+			bool iteration;
+			//trouver le fils dans kxml (algo inspiré de http://khayyam.developpez.com/articles/cpp/tinyxml/)
+			bool trouve = false;
+			/*TiXmlHandle hdl(&doc);
+TiXmlElement *elem = hdl.FirstChildElement().FirstChildElement().Element();
+ 
+while(elem && !trouve){
+    if( string(elem->Attribute("name")) == "tata"){
+        trouve = true;
+        break;
+    }
+    elem = elem->NextSiblingElement(); // iteration, passage a l'element suivant
+}
+ 
+if (!trouve)
+    cerr << "user inexistant" << endl;
+else{
+    elem->SetAttribute("pass", "nouv");
+    doc.SaveFile("users.xml");  // enregistrement de la modification
+}
+*/
+
+
+
+			
+			//identifier s'il est iteratif
+			/*XMLElement* it= Noeud->FirstChildElement("task-iteration");
+			const char* nom_it = it->GetText();
+			if (it!="[1]"){
+				iteration=true;
+			}
+			else{
+				iteration=false;
+			}
+
+			*/
 			
 			//comparaison mot
 			if(mot==num_fils){
 				//on a un fils on peut ecrire l'aine
 				cout <<"on a trouvé le fils :" <<num_fils << endl;
-				Automate << state <<" "<< state +1<< " "<<dernier_fils<< " eps"<< endl;
+				//if(!iteration){
+					Automate << state <<" "<< state +1<< " "<<dernier_fils<< " eps"<< endl;
+					state ++;
+				//}
+				/*else{
+					Automate << state <<" "<< state << " "<<dernier_fils<< " eps"<< endl;
+					state ++;
+				}*/
 				dernier_fils=num_fils;
-				state ++;
+				
 				
 				//pour le suivant
 				num_fraterie++;
@@ -454,7 +501,7 @@ void create_Automate_RacineSequentielle(XMLElement* Racine, string FichierTaches
 //à modifier
 //fonction qui genere un automate (fixhier txt) correspondant à la production de Tache (par son identifiant numérique) par ses sous-tâches alternatives
 void create_Automate_RacineAlternative(XMLElement* Noeud, string FichierTaches){
-	XMLElement* nom= Racine->FirstChildElement("task-name");
+	XMLElement* nom= Noeud->FirstChildElement("task-name");
 	//XMLElement* num= Racine->FirstChildElement("task-numero");
 	const char* nom_value = nom->GetText();
 	const char* num_value = "Racine";
