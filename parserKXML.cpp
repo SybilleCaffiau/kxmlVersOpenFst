@@ -14,6 +14,69 @@
 using namespace std;
 using namespace tinyxml2;
 
+//retourne si la tache est iterative
+bool isIteration(string num_tache, XMLElement* Noeud, string fichier_XML){
+	bool iter=false;
+	XMLDocument doc;
+	char* f = (char*)fichier_XML.c_str();
+	XMLError err =doc.LoadFile(f);
+	
+	
+	if(err==0){
+
+		//XMLElement* racine = doc.RootElement();
+		//XMLElement* noeud_suivant= racine->FirstChildElement("task");
+		//XMLElement* noeud_suivant1;
+		string num_noeud = Noeud->FirstChildElement("task-numero")->GetText();
+		
+		
+		
+		//cout <<"la tache "<<num_tache<<" de numero dans le modèle de tâches "<<value_numero<<" est etudiée"<<endl;
+		
+		
+		if(num_noeud==num_tache){
+			
+			cout <<"la tache "<< num_tache<<" est trouvée" << endl;
+			const char* value_iter = Noeud->FirstChildElement("task-iteration")->GetText();
+			//strcmp retourne 0 si value_iter et [1] sont egaux
+			if(strcmp(value_iter,"[1]")==0){
+				iter=false;
+			}
+			else{
+				iter=true;
+			}
+			cout << "la tache "<<num_tache<<" est iterative ? :"<< iter<<endl;
+			return iter;		
+		}
+		else{
+	
+			XMLElement* Fils1=Noeud->FirstChildElement("task");
+			XMLElement* Frere;
+			cout << "on ne sait pas on passe à une autre "<<endl;
+	
+			while(Fils1){
+				Frere=Fils1->NextSiblingElement("task");
+				return(isIteration(num_tache, Frere, fichier_XML));
+				Fils1=Frere;
+			}
+		}
+			//noeud_suivant1=racine->NextChildElement("task");
+			//num_noeud = noeud_suivant1->FirstChildElement("task-numero")->GetText();
+			//cout <<"la tache "<< num_noeud<<" est trouvée" << endl;
+			//noeud_suivant=noeud_suivant1;
+		//}
+	}
+	
+	else{
+		printf( "problème chargement\n");
+		return false;
+	}
+ 
+
+	//return iter;
+}
+
+
 void affiche(XMLElement* Noeud, string fichierTaches){
 	
 	string nom_racine = Noeud->Name();
@@ -122,7 +185,7 @@ string intToString(int i){
 }
 
 //fonction qui genere un automate (fichier txt) correspondant à la production de Tache (par son identifiant numérique) par ses sous-tâches sequentielles
-void create_Automate_TacheSequentielle(XMLElement* Noeud, string FichierTaches){
+void create_Automate_TacheSequentielle(XMLElement* Noeud, string FichierTaches, string nom_fichierXML){
 	XMLElement* nom= Noeud->FirstChildElement("task-name");
 	XMLElement* num= Noeud->FirstChildElement("task-numero");
 	const char* nom_value = nom->GetText();
@@ -153,6 +216,7 @@ void create_Automate_TacheSequentielle(XMLElement* Noeud, string FichierTaches){
 		dernier_fils=num_mere+"."+intToString(num_fraterie);
 		num_fraterie++;
 		num_fils=num_mere+"."+intToString(num_fraterie);
+		
 	}
 	
 	
@@ -166,58 +230,24 @@ void create_Automate_TacheSequentielle(XMLElement* Noeud, string FichierTaches){
 			//cout << "Je suis dans la boucle" <<endl;
 			buffer >> mot;
 			nom = (char*)mot.c_str();
-			printf( "%s\n", nom);
+			//printf( "%s\n", nom);
 		
 			//identifier si le fils est iteratif
-			bool iteration;
-			//trouver le fils dans kxml (algo inspiré de http://khayyam.developpez.com/articles/cpp/tinyxml/)
-			bool trouve = false;
-			/*TiXmlHandle hdl(&doc);
-TiXmlElement *elem = hdl.FirstChildElement().FirstChildElement().Element();
- 
-while(elem && !trouve){
-    if( string(elem->Attribute("name")) == "tata"){
-        trouve = true;
-        break;
-    }
-    elem = elem->NextSiblingElement(); // iteration, passage a l'element suivant
-}
- 
-if (!trouve)
-    cerr << "user inexistant" << endl;
-else{
-    elem->SetAttribute("pass", "nouv");
-    doc.SaveFile("users.xml");  // enregistrement de la modification
-}
-*/
-
-
-
-			
-			//identifier s'il est iteratif
-			/*XMLElement* it= Noeud->FirstChildElement("task-iteration");
-			const char* nom_it = it->GetText();
-			if (it!="[1]"){
-				iteration=true;
-			}
-			else{
-				iteration=false;
-			}
-
-			*/
+			//bool iteration=isIteration(dernier_fils, nom_fichierXML);
+			bool iteration=false;
 			
 			//comparaison mot
 			if(mot==num_fils){
 				//on a un fils on peut ecrire l'aine
-				cout <<"on a trouvé le fils :" <<num_fils << endl;
-				//if(!iteration){
+				//cout <<"on a trouvé le fils :" <<num_fils << endl;
+				if(!iteration){
 					Automate << state <<" "<< state +1<< " "<<dernier_fils<< " eps"<< endl;
 					state ++;
-				//}
-				/*else{
+				}
+				else{
 					Automate << state <<" "<< state << " "<<dernier_fils<< " eps"<< endl;
 					state ++;
-				}*/
+				}
 				dernier_fils=num_fils;
 				
 				
@@ -301,7 +331,7 @@ void create_Automate_TacheAlternative(XMLElement* Noeud, string FichierTaches){
 			//cout << "Je suis dans la boucle" <<endl;
 			buffer >> mot;
 			nom = (char*)mot.c_str();
-			printf( "%s\n", nom);
+			//printf( "%s\n", nom);
 			
 			//comparaison mot
 			if(mot==num_fils){
@@ -366,6 +396,7 @@ void create_Automate_TacheSansOrdre(XMLElement* Noeud){
 }
 
 
+
 void recherche_recursif(XMLElement* Noeud, string fichierXML, string nom_tache, string fichierNomTaches){
 	
 	XMLDocument doc;
@@ -389,7 +420,7 @@ void recherche_recursif(XMLElement* Noeud, string fichierXML, string nom_tache, 
 				create_Automate_TacheAlternative(Noeud, fichierNomTaches);
 			}
 			if (ordo=="SEQ"){
-				create_Automate_TacheSequentielle(Noeud, fichierNomTaches);
+				create_Automate_TacheSequentielle(Noeud, fichierNomTaches,fichierXML);
 			}
 			if(ordo =="PAR"){//attention on choisit dans cette version de traiter le parallèlisme comme du alt
 				create_Automate_TacheAlternative(Noeud, fichierNomTaches);
@@ -420,7 +451,10 @@ void recherche_recursif(XMLElement* Noeud, string fichierXML, string nom_tache, 
 
 
 //fonction qui genere un automate (fixhier txt) correspondant à la production de Racine (par son identifiant numérique) par ses sous-tâches sequentielles
-void create_Automate_RacineSequentielle(XMLElement* Racine, string FichierTaches){
+void create_Automate_RacineSequentielle(XMLElement* Racine, string FichierTaches, string nom_fichierXML){
+	//Attention ne fonctionne pas si la dernière tache est iterative
+	//cout<<"dans create_Automate_RacineSequentielle"<<endl;
+
 	XMLElement* nom= Racine->FirstChildElement("task-name");
 	//XMLElement* num= Racine->FirstChildElement("task-numero");
 	const char* nom_value = nom->GetText();
@@ -458,15 +492,30 @@ void create_Automate_RacineSequentielle(XMLElement* Racine, string FichierTaches
 			//cout << "Je suis dans la boucle" <<endl;
 			buffer >> mot;
 			nom = (char*)mot.c_str();
-			printf( "%s\n", nom);
+			//printf( "%s\n", nom);
+			
+			
+			//identifier si le fils est iteratif
+			//bool iteration=isIteration(dernier_fils, Racine ,nom_fichierXML);
+			//cout <<"iterative?:"<<iteration;
 			
 			//comparaison mot
 			if(mot==num_fils){
 				//on a un fils on peut ecrire l'aine
-				cout <<"on a trouvé le fils :" <<num_fils << endl;
-				Automate << state <<" "<< state +1<< " "<<dernier_fils<< " eps"<< endl;
+				//cout <<"on a trouvé le fils :" <<num_fils << endl;
+				
+				//il faut identifier si le fils est iteratif
+				bool iteration=isIteration(dernier_fils, Racine, nom_fichierXML);
+				cout <<dernier_fils <<" iteratif ?:"<<iteration<<endl;
+				if(!iteration){
+					Automate << state <<" "<< state +1<< " "<<dernier_fils<< " eps"<< endl;
+					state ++;
+				}
+				else{
+					Automate << state <<" "<< state<< " "<<dernier_fils<< " eps"<< endl;
+				}
 				dernier_fils=num_fils;
-				state ++;
+				
 				
 				//pour le suivant
 				num_fraterie++;
@@ -537,7 +586,7 @@ void create_Automate_RacineAlternative(XMLElement* Noeud, string FichierTaches){
 			//cout << "Je suis dans la boucle" <<endl;
 			buffer >> mot;
 			nom = (char*)mot.c_str();
-			printf( "%s\n", nom);
+			//printf( "%s\n", nom);
 			
 			//comparaison mot
 			if(mot==num_fils){
@@ -629,7 +678,7 @@ void create_Automates(string fichierNomTaches, string fichierMdT){
 					create_Automate_RacineAlternative(Fils1, fichierNomTaches);
 				}
 				if (ordo=="SEQ"){
-					create_Automate_RacineSequentielle(Fils1, fichierNomTaches);
+					create_Automate_RacineSequentielle(Fils1, fichierNomTaches, fichierMdT);
 				}
 				if(ordo=="PAR"){//attention on choisit dans cette version de traiter le parallèlisme comme du alt
 					create_Automate_RacineAlternative(Fils1, fichierNomTaches);
@@ -640,10 +689,7 @@ void create_Automates(string fichierNomTaches, string fichierMdT){
 				
 				
 				recherche_recursif(Fils1, fichierMdT, tache, fichierNomTaches);
-				//cout << " tache trouvee"<< endl;
-				//aiguillage vers la bonne fonction de traduction en automate
-				//ordonnancement= tacheXML->FirstChildElement("task-decomposition");
-				//printf( "le noeud est  %s\n", ordonnancement->GetText());
+
 				
 				//on passe à la tache suivante
 				getline(LesTaches, ligne);
@@ -689,9 +735,9 @@ int main(int argc, char *argv[]){
 	
 		XMLElement* racine = doc.RootElement();
 	
-		
-		
-		
+
+	
+
 		affiche_recursif(racine, nomFichierNomTaches);
 		
 		
@@ -703,13 +749,15 @@ int main(int argc, char *argv[]){
 
 	
 	create_SymbolTable(nomFichierNomTaches, nomFichierSymbol);
-	//doc.SaveFile( "test.xml" );
 	
+	
+	//doc.SaveFile( "test.xml" );
+
 	create_Automates(nomFichierNomTaches, argv[1]);
 	
-	
-	//pour le fichier syms on peut garder les .
-	
+		//pour le fichier syms on peut garder les .
+
+ 	
 	return 0;
 }
 
